@@ -1,0 +1,6 @@
+# Lovable / Cloudflare Workers files — not used on Vercel
+wrangler.jsonc
+src/server.ts
+src/start.ts
+.lovable/
+DEPLOY_VERCEL.md
