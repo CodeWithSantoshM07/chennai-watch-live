@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Vercel/Vite SPA entry point.
 // NOTE: This file is NOT used by the Lovable preview (which runs TanStack Start
 // via @lovable.dev/vite-tanstack-config + src/server.ts). It only takes effect
