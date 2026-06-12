@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -21,20 +20,6 @@ import { ReportForm } from "@/components/crime/ReportForm";
 import { AreasPanel } from "@/components/crime/AreasPanel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Login, isAuthed, signOut } from "@/components/crime/Login";
-
-export const Route = createFileRoute("/")({
-  component: Dashboard,
-  head: () => ({
-    meta: [
-      { title: "CrimeWatch Live — Chennai" },
-      {
-        name: "description",
-        content:
-          "Real-time crime tracking dashboard for Chennai. Live feed, interactive map, and citizen reporting.",
-      },
-    ],
-  }),
-});
 
 const MAX_INCIDENTS = 120;
 
@@ -63,10 +48,9 @@ function rowToIncident(r: DbRow): Incident {
   };
 }
 
-function Dashboard() {
+export default function Dashboard() {
   const qc = useQueryClient();
 
-  // Auth gate (client-only). Match SSR by starting false on both sides.
   const [authed, setAuthed] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   useEffect(() => {
@@ -74,8 +58,6 @@ function Dashboard() {
     setAuthChecked(true);
   }, []);
 
-  // Seed incidents on the client only — avoids hydration mismatch from
-  // Date.now() / Math.random().
   const [autoIncidents, setAutoIncidents] = useState<Incident[]>([]);
   const seeded = useRef(false);
   useEffect(() => {
@@ -96,14 +78,12 @@ function Dashboard() {
   const [mapFullscreen, setMapFullscreen] = useState(false);
   const tplIndex = useRef(0);
 
-  // Clock ticks every second (client only)
   useEffect(() => {
     setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
 
-  // Auto-tick simulation
   useEffect(() => {
     if (!live) return;
     const t = setInterval(() => {
@@ -117,7 +97,6 @@ function Dashboard() {
     return () => clearInterval(t);
   }, [live]);
 
-  // Persistent incidents from DB
   const { data: dbIncidents = [] } = useQuery({
     queryKey: ["incidents"],
     queryFn: async () => {
